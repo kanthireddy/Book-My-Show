@@ -27,7 +27,7 @@ pipeline{
         stage('Code Quality Analysis'){
             steps{
                  withSonarQubeEnv('sonar-server') {
-                    sh ' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BMS Dsonar.projectKey=BMS '
+                    sh ' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BMS -Dsonar.projectKey=BMS '
                 }
 
             }
