@@ -61,15 +61,10 @@ pipeline{
             steps {
                     script{
                         sh """
-<<<<<<< HEAD
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker build -f Dockerfile-Kanthi -t kanthi123/bookmyshow:latest .
-                        docker push kanthi123/bookmyshow:latest
-=======
+                        
                         echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
                         docker build -f bookmyshow-app/Dockerfile-Kanthi -t kanthi123/bms:latest bookmyshow-app
                         docker push kanthi123/bms:latest
->>>>>>> ab91e6a24ec3e60bd04ec6dd59716a54a39f3bb7
                         """
                     }
             }
@@ -83,16 +78,10 @@ pipeline{
                     echo "Configuring kubectl for EKS cluster..."
                     aws eks update-kubeconfig --name likith-eks --region us-west-2
 
-                    echo "Verifying kubeconfig..."
-                    kubectl config view
-
                     echo "Deploying application to EKS..."
-                    kubectl apply -f deployment.yml
-                    kubectl apply -f service.yml
+                    kubectl apply -f deployment-Kanthi.yml
+                    kubectl apply -f service-Kanthi.yml
 
-                    echo "Verifying deployment..."
-                    kubectl get pods
-                    kubectl get svc
                     '''
                 }
             }
