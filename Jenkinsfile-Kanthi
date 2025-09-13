@@ -9,6 +9,7 @@ pipeline{
 
     environment{
         SCANNER_HOME = tool 'sonar-scanner'
+        DOCKER_CREDS = credentials('docker-cred')
     }
 
     stages{
@@ -43,14 +44,14 @@ pipeline{
 
         stage('Docker Image build'){
             steps {
-                    withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                   
                         sh """
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
                         docker build -t kanthi123/bookmyshow:latest .
                         docker push kanthi123/bookmyshow:latest
                         """
                     }
-                }
+
         }
 
 
