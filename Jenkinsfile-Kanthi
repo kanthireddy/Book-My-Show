@@ -21,7 +21,7 @@ pipeline{
 
         stage('Git repo'){
             steps{
-                 git branch: 'main', url: 'https://github.com/KastroVKiran/Book-My-Show.git'
+                 git branch: 'feature', url: 'https://github.com/Kanthireddy/Book-My-Show.git'
             }
         }
 
