@@ -21,7 +21,7 @@ pipeline{
 
         stage('Git repo'){
             steps{
-                 git branch: 'feature', url: 'https://github.com/Kanthireddy/Book-My-Show.git'
+                 git branch: 'main', url: 'https://github.com/Kanthireddy/Book-My-Show.git'
             }
         }
 
@@ -61,7 +61,7 @@ pipeline{
             steps {
                     script{
                         sh """
-                        
+
                         echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
                         docker build -f bookmyshow-app/Dockerfile-Kanthi -t kanthi123/bms:latest bookmyshow-app
                         docker push kanthi123/bms:latest
@@ -81,7 +81,6 @@ pipeline{
                     echo "Deploying application to EKS..."
                     kubectl apply -f deployment-Kanthi.yml
                     kubectl apply -f service-Kanthi.yml
-
                     '''
                 }
             }
@@ -89,5 +88,18 @@ pipeline{
 
 
 
+    }
+
+            post {
+        always {
+            emailext (
+                attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                      "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                      "URL: ${env.BUILD_URL}<br/>",
+                to: 'kanthireddy2002@gmail.com'
+              )
+        }
     }
 }
