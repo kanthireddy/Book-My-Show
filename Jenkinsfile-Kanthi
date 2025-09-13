@@ -1,0 +1,59 @@
+pipeline{
+
+    agent any
+    tools {
+        jdk 'jdk'
+        nodejs 'node'
+    }
+
+
+    environments{
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+
+    stages{
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Git repo'){
+            steps{
+                 git branch: 'main', url: 'https://github.com/KastroVKiran/Book-My-Show.git'
+            }
+        }
+
+        stage('Code Quality Analysis'){
+            steps{
+                 withSonarQubeEnv('sonar-server') {
+                    sh ' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BMS Dsonar.projectKey=BMS '
+                }
+
+            }
+        }
+
+        stage('Quality Gate check') {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+                }
+            }
+        }
+
+        stage('Docker Image build'){
+            steps {
+                    withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh """
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker build -t kanthi123/bookmyshow:latest .
+                        docker push kanthi123/bookmyshow:latest
+                        """
+                    }
+                }
+        }
+
+
+
+    }
+}
