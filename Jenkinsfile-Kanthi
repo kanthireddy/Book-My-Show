@@ -47,7 +47,7 @@ pipeline{
                     script{
                         sh """
                         echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
-                        docker build -f Dockerfile-Kanthi -t kanthi/bms:latest .
+                        docker build -f bookmyshow-app/Dockerfile-Kanthi -t kanthi/bms:latest bookmyshow-app
                         docker push kanthi123/bms:latest
                         """
                     }
