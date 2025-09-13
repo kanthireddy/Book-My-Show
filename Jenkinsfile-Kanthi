@@ -64,9 +64,31 @@ pipeline{
                         echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
                         docker build -f bookmyshow-app/Dockerfile-Kanthi -t kanthi123/bms:latest bookmyshow-app
                         docker push kanthi123/bms:latest
-                        docker run -p 3000:3000 kanthi123/bms:latest
                         """
                     }
+            }
+        }
+
+           stage('Deploy to EKS Cluster') {
+            steps {
+                script {
+                    sh '''
+                   
+                    echo "Configuring kubectl for EKS cluster..."
+                    aws eks update-kubeconfig --name likith-eks --region us-west-2
+
+                    echo "Verifying kubeconfig..."
+                    kubectl config view
+
+                    echo "Deploying application to EKS..."
+                    kubectl apply -f deployment.yml
+                    kubectl apply -f service.yml
+
+                    echo "Verifying deployment..."
+                    kubectl get pods
+                    kubectl get svc
+                    '''
+                }
             }
         }
 
