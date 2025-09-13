@@ -49,7 +49,7 @@ pipeline{
                         echo ${DOCKER_CREDS_PSW} | docker login -u ${DOCKER_CREDS_USR} --password-stdin
                         docker build -f bookmyshow-app/Dockerfile-Kanthi -t kanthi123/bms:latest bookmyshow-app
                         docker push kanthi123/bms:latest
-                        docker run -p 3000:3000 book-my-show
+                        docker run -p 3000:3000 kanthi123/bms:latest
                         """
                     }
             }
